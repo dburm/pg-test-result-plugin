@@ -1,0 +1,156 @@
+<!-- vim: set ts=2 sw=2: -->
+
+<dom-module id="gr-test-result-table-plugin">
+  <script>
+    Gerrit.install(plugin => {
+      plugin.registerStyleModule(
+        'change-metadata', 'gr-test-result-table-style-module');
+      plugin.registerCustomComponent(
+        //'change-view-integration',
+        'change-metadata-item',
+        'gr-test-result-table-module');
+    });
+  </script>
+</dom-module>
+
+<dom-module id="gr-test-result-table-style-module">
+  <template>
+    <style>
+      .test_result_table {
+          border-collapse: collapse;
+          margin-top: 0;
+          margin-bottom: 1em;
+          width: 100%
+      }
+
+      .test_result_table tr {
+          border-left: 1px solid #eef3f5;
+          border-right: 1px solid #eef3f5;
+      }
+
+      .test_result_table td.checker {
+          background-color: #eef3f5;
+          font-weight: bold;
+          color: #212121;
+      }
+
+      .test_result_table td.checker_date {
+          font-weight: normal;
+          width: 13em;
+      }
+
+      .test_result_table td {
+          padding: 2px 4px 2px 6px;
+          border: 1px solid #eef3f5;
+      }
+
+      .test_result_table a,
+      .test_result_table a:visited {
+        color: #2a66d9;
+      }
+
+      [id="result_SUCCESS"] {
+        color: #5b9d52;
+        font-weight: bold;
+      }
+
+      [id="result_FAILURE"] {
+          color: #cf2f19;
+          font-weight: bold;
+      }
+    </style>
+  </template>
+</dom-module>
+
+<dom-module id="gr-test-result-table-module">
+  <template>
+    <style include="gr-test-result-table-style-module"></style>
+    <div class="separatedSection style-scope gr-change-metadata" style="margin-top: 0; padding: 0">
+      <table class="test_result_table"><tbody>
+        <template is="dom-repeat" items="{{checkers}}">
+          <tr>
+            <td class="checker">[[item.checker]]</td>
+            <td class="checker checker_date">[[item.date]]</td>
+          </tr>
+          <template is="dom-repeat" items="{{item.checks}}">
+            <tr>
+              <td><a href="[[item.url]]" rel="nofollow">[[item.name]]</a></td>
+              <td>
+                <span>
+                  <span id="result_[[item.result]]">
+                    [[item.result]]
+                  </span>
+                  [[item.spent]]
+                </span>
+              </td>
+            </tr>
+          </template>
+        </template>
+      </tbody></table>
+    </div>
+  </template>
+  <script>
+    'use strict';
+    (function() {
+      Polymer({
+        is: "gr-test-result-table-module",
+        properties: {
+          plugin: Object,
+          change: Object,
+          checkers: Array,
+        },
+
+        getPatchSetNum(revision) {
+          return this.change.revisions[revision]._number;
+        },
+
+        attached() {
+          // Get current patchset num
+          var current_patchset = this.getPatchSetNum(
+            this.change.current_revision);
+          // Get all messages to current patchset with Verified verdict
+          var verifiedMessages = this.change.messages.filter(it =>
+              it.message.startsWith('Patch Set ' +
+                current_patchset + ': Verified'));
+
+          // Gather checks info from messages
+          // check formats:
+          //   - check-name http://check-url : RESULT
+          //   - check-name http://check-url : RESULT in SPENT_TIME
+          //   - check-name http://check-url : RESULT (skipped)
+          //   - check-name http://check-url : RESULT (skipped) in SPENT_TIME
+          var _checkers = [];
+          verifiedMessages.forEach(it => {
+            var check;
+            var _checks = [];
+
+            var re = /^[*-] ([^ ]+) (http[^ ]+) : ([A-Z]+)( .*)?$/gm;
+            while (check = re.exec(it.message)) {
+              _checks.push({ name: check[1],
+                             url: check[2],
+                             result: check[3],
+                             spent: check[4],
+                           });
+            };
+
+            if (_checks.length > 0) {
+              // Fill checker
+              var id = _checkers.findIndex(
+                item => item.account_id == it.author._account_id);
+              if (id == -1) {
+                id = _checkers.push(
+                    { checker: it.author.name,
+                      account_id : it.author._account_id,
+                      date: util.parseDate(it.date).toLocaleString("en-US"),
+                    }) - 1;
+              };
+              _checkers[id] = Object.assign(_checkers[id],
+                { checks: _checks });
+            };
+          });
+          this.checkers = _checkers
+        },
+      })
+    })();
+  </script>
+</dom-module>
