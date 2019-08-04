@@ -3,17 +3,14 @@
 <dom-module id="gr-test-result-table-plugin">
   <script>
     Gerrit.install(plugin => {
-      plugin.registerStyleModule(
-        'change-metadata', 'gr-test-result-table-style-module');
       plugin.registerCustomComponent(
-        //'change-view-integration',
         'change-metadata-item',
         'gr-test-result-table-module');
     });
   </script>
 </dom-module>
 
-<dom-module id="gr-test-result-table-style-module">
+<dom-module id="gr-test-result-table-module">
   <template>
     <style>
       .test_result_table {
@@ -59,12 +56,6 @@
           font-weight: bold;
       }
     </style>
-  </template>
-</dom-module>
-
-<dom-module id="gr-test-result-table-module">
-  <template>
-    <style include="gr-test-result-table-style-module"></style>
     <div class="separatedSection style-scope gr-change-metadata" style="margin-top: 0; padding: 0">
       <table class="test_result_table"><tbody>
         <template is="dom-repeat" items="{{checkers}}">
