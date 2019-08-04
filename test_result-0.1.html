@@ -98,10 +98,9 @@
           // Get current patchset num
           var current_patchset = this.getPatchSetNum(
             this.change.current_revision);
-          // Get all messages to current patchset with Verified verdict
+          // Get all messages to current patchset
           var verifiedMessages = this.change.messages.filter(it =>
-              it.message.startsWith('Patch Set ' +
-                current_patchset + ':'));
+              it.message._revision_number == current_patchset);
 
           // Gather checks info from messages
           // check formats:
