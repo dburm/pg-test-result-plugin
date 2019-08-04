@@ -85,17 +85,16 @@
     (function() {
       Polymer({
         is: "gr-test-result-table-module",
+
         properties: {
           plugin: Object,
           change: Object,
           checkers: Array,
         },
 
-        getPatchSetNum(revision) {
-          return this.change.revisions[revision]._number;
-        },
-
         attached() {
+          if (!this.change) { return; }
+
           // Get current patchset num
           var current_patchset = this.getPatchSetNum(
             this.change.current_revision);
@@ -141,6 +140,10 @@
             };
           });
           this.checkers = _checkers
+        },
+
+        getPatchSetNum(revision) {
+          return this.change.revisions[revision]._number;
         },
       })
     })();
