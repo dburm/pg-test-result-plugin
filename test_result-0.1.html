@@ -141,11 +141,12 @@
                 id = _checkers.push(
                     { checker: it.author.name,
                       account_id : it.author._account_id,
-                      date: util.parseDate(it.date).toLocaleString("en-US"),
                     }) - 1;
               };
               _checkers[id] = Object.assign(_checkers[id],
-                { checks: _checks });
+                { checks: _checks,
+                  date: util.parseDate(it.date).toLocaleString("en-US")
+                });
             };
           });
           this.checkers = _checkers
