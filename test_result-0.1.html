@@ -104,7 +104,7 @@
             this.change.current_revision);
           // Get all messages to current patchset
           var verifiedMessages = this.change.messages.filter(it =>
-              it.message._revision_number == current_patchset);
+              it._revision_number == current_patchset);
 
           // Gather checks info from messages
           // check formats:
