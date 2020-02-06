@@ -3,6 +3,8 @@
 <dom-module id="gr-test-result-table-plugin">
   <script>
     Gerrit.install(plugin => {
+      plugin.registerStyleModule(
+        'change-metadata', 'gr-test-result-table-style-module');
       plugin.registerCustomComponent(
         'change-metadata-item',
         'gr-test-result-table-module');
@@ -10,74 +12,67 @@
   </script>
 </dom-module>
 
-<dom-module id="gr-test-result-table-module">
+<dom-module id="gr-test-result-table-style-module">
   <template>
     <style>
-      .test_result_table {
-          border-collapse: collapse;
-          margin-top: 0;
-          margin-bottom: 1em;
-          width: 100%
-      }
-
-      .test_result_table tr {
-          border-left: 1px solid #eef3f5;
-          border-right: 1px solid #eef3f5;
-      }
-
-      .test_result_table td.checker {
-          background-color: #eef3f5;
-          font-weight: bold;
-          color: #212121;
-      }
-
-      .test_result_table td.checker_date {
-          font-weight: normal;
-          width: 13em;
-      }
-
-      .test_result_table td {
-          padding: 2px 4px 2px 6px;
-          border: 1px solid #eef3f5;
-      }
-
-      .test_result_table a,
-      .test_result_table a:visited {
-        color: #2a66d9;
-      }
-
-      [id="result_SUCCESS"] {
-        color: #5b9d52;
+      #result_SUCCESS {
         font-weight: bold;
+        color: #5b9d52;
       }
 
-      [id="result_FAILURE"] {
-          color: #cf2f19;
-          font-weight: bold;
+      #result_FAILURE {
+        font-weight: bold;
+        color: #cf2f19;
+      }
+      #checker-date {
+        text-align: right;
       }
     </style>
+  </template>
+</dom-module>
+
+<dom-module id="gr-test-result-table-module">
+  <template>
+    <style include="shared-styles"></style>
+    <style include="gr-file-list"></style>
+    <style include="gr-file-list-header"></style>
+    <style include="gr-test-result-table-style-module"></style>
     <div class="separatedSection style-scope gr-change-metadata" style="margin-top: 0; padding: 0">
-      <table class="test_result_table"><tbody>
-        <template is="dom-repeat" items="{{checkers}}">
-          <tr>
-            <td class="checker">[[item.checker]]</td>
-            <td class="checker checker_date">[[item.date]]</td>
-          </tr>
-          <template is="dom-repeat" items="{{item.checks}}">
-            <tr>
-              <td><a href="[[item.url]]" rel="nofollow">[[item.name]]</a></td>
-              <td>
-                <span>
-                  <span id="result_[[item.result]]">
-                    [[item.result]]
-                  </span>
-                  [[item.spent]]
-                </span>
-              </td>
-            </tr>
-          </template>
+    <template is="dom-repeat" items="{{checkers}}">
+      <div class="gr-file-list">
+
+        <div class="patchInfo-header gr-file-list-header">
+          <span class="path gr-file-list" title="[[item.checker]]">
+            [[item.checker]]
+          </span>
+          <span class="path gr-file-list" id="checker-date">
+            [[item.date]]
+          </span>
+        </div>
+
+        <template is="dom-repeat" items="{{item.checks}}">
+        <div class="file-row row gr-file-list">
+
+          <span class="path gr-file-list">
+            <a class="pathLink gr-file-list" href="[[item.url]]">
+              <span class="fullFileName gr-file-list" title="[[item.name]]">
+                [[item.name]]
+              </span>
+            </a>
+          </span>
+          <div class="stats gr-file-list">
+            <span class="path gr-file-list" id="result_[[item.result]]">
+              [[item.result]]
+            </span>
+            <span class="path gr-file-list">
+              [[item.spent]]
+            </span>
+          </div>
+
+        </div>
         </template>
-      </tbody></table>
+      </div>
+    </template>
     </div>
   </template>
   <script>
