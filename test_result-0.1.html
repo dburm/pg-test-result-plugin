@@ -93,6 +93,15 @@
         },
 
         attached() {
+          this.addEventListener('change-changed', this._handleReloadChange.bind(this));
+          this._showTable()
+        },
+
+        _handleReloadChange(e) {
+          this._showTable()
+        },
+
+        _showTable() {
           if (!this.change) { return; }
 
           // Get current patchset num
