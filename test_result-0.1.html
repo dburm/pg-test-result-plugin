@@ -46,7 +46,7 @@
             [[item.checker]]
           </span>
           <span class="path gr-file-list" id="checker-date">
-            [[item.date]]
+            <gr-date-formatter date-str="[[item.date]]"></gr-date-formatter>
           </span>
         </div>
 
@@ -138,7 +138,7 @@
               };
               _checkers[id] = Object.assign(_checkers[id],
                 { checks: _checks,
-                  date: util.parseDate(it.date).toLocaleString("en-US")
+                  date: it.date
                 });
             };
           });
