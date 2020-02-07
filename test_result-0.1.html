@@ -112,37 +112,40 @@
           //   - check-name http://check-url : RESULT in SPENT_TIME
           //   - check-name http://check-url : RESULT (skipped)
           //   - check-name http://check-url : RESULT (skipped) in SPENT_TIME
-          var _checkers = [];
+          var _checkers = {};
           verifiedMessages.forEach(it => {
             var check;
-            var _checks = [];
+            var _checks = {};
 
             var re = /^[*-] ([^ ]+) (http[^ ]+) : ([A-Z]+)( .*)?$/gm;
             while (check = re.exec(it.message)) {
-              _checks.push({ name: check[1],
-                             url: check[2],
-                             result: check[3],
-                             spent: check[4],
-                           });
+              _checks[check[1]] = { name: check[1],
+                                    url: check[2],
+                                    result: check[3],
+                                    spent: check[4],
+                                  };
             };
 
-            if (_checks.length > 0) {
+            if (Object.keys(_checks).length > 0) {
               // Fill checker
-              var id = _checkers.findIndex(
-                item => item.account_id == it.author._account_id);
-              if (id == -1) {
-                id = _checkers.push(
-                    { checker: it.author.name,
-                      account_id : it.author._account_id,
-                    }) - 1;
-              };
-              _checkers[id] = Object.assign(_checkers[id],
-                { checks: _checks,
+              var checker = _checkers[it.author._account_id];
+              if (checker === undefined) {
+                checker = _checkers[it.author._account_id] = {
+                  checker: it.author.name,
+                  account_id : it.author._account_id,
+                  checks: _checks,
                   date: it.date
-                });
+                };
+              } else {
+                checker.date = it.date;
+                Object.assign(checker.checks, _checks);
+              }
             };
           });
-          this.checkers = _checkers
+          this.checkers = Object.values(_checkers).map(function(checker) {
+            checker.checks = Object.values(checker.checks);
+            return checker;
+          });
         },
 
         getPatchSetNum(revision) {
