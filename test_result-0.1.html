@@ -106,25 +106,9 @@
           var verifiedMessages = this.change.messages.filter(it =>
               it._revision_number == current_patchset);
 
-          // Gather checks info from messages
-          // check formats:
-          //   - check-name http://check-url : RESULT
-          //   - check-name http://check-url : RESULT in SPENT_TIME
-          //   - check-name http://check-url : RESULT (skipped)
-          //   - check-name http://check-url : RESULT (skipped) in SPENT_TIME
           var _checkers = {};
           verifiedMessages.forEach(it => {
-            var check;
-            var _checks = {};
-
-            var re = /^[*-] ([^ ]+) (http[^ ]+) : ([A-Z]+)( .*)?$/gm;
-            while (check = re.exec(it.message)) {
-              _checks[check[1]] = { name: check[1],
-                                    url: check[2],
-                                    result: check[3],
-                                    spent: check[4],
-                                  };
-            };
+            var _checks = this.parseChecksFromMessage(it.message);
 
             if (Object.keys(_checks).length > 0) {
               // Fill checker
@@ -150,6 +134,33 @@
 
         getPatchSetNum(revision) {
           return this.change.revisions[revision]._number;
+        },
+
+        // Gather checks info from messages
+        // check formats:
+        //   - check-name http://check-url : RESULT
+        //   - check-name http://check-url : RESULT in SPENT_TIME
+        //   - check-name http://check-url : RESULT (skipped)
+        //   - check-name http://check-url : RESULT (skipped) in SPENT_TIME
+        // check format (started):
+        //   Build Started http://check-url (1/2)
+        // check format (old):
+        //   http://check-url : RESULT
+        parseChecksFromMessage(message) {
+          var check;
+          var checks = {};
+          
+          var re = /(?:Build (?<st>Started) )?(?<url>http[^ ]+\/job\/(?<name>[^\/ ]+)\/[^ ]+)(?: : (?<result>[A-Z]+)(?<spent> .*)?$)?/gm;
+          while (check = re.exec(message)) {
+            checks[check.groups.name] = {
+              name: check.groups.name,
+              url: check.groups.url,
+              result: check.groups.st || check.groups.result,
+              spent: check.groups.spent,
+            };
+          };
+
+          return checks;
         },
       })
     })();
