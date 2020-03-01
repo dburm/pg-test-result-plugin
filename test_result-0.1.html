@@ -43,41 +43,41 @@
     <style include="gr-file-list-header"></style>
     <style include="gr-test-result-table-style-module"></style>
     <div class="separatedSection style-scope gr-change-metadata" style="margin-top: 0; padding: 0">
-    <template is="dom-repeat" items="{{checkers}}">
-      <div class="gr-file-list">
+      <template is="dom-repeat" items="{{checkers}}">
+        <div class="gr-file-list">
 
-        <div class="patchInfo-header gr-file-list-header">
-          <span class="path gr-file-list" title="[[item.checker]]">
-            [[item.checker]]
-          </span>
-          <span class="path gr-file-list" id="checker-date">
-            <gr-date-formatter date-str="[[item.date]]"></gr-date-formatter>
-          </span>
-        </div>
-
-        <template is="dom-repeat" items="{{item.checks}}">
-        <div class="file-row row gr-file-list">
-
-          <span class="path gr-file-list">
-            <a class="pathLink gr-file-list" href="[[item.url]]">
-              <span class="fullFileName gr-file-list" title="[[item.name]]">
-                [[item.name]]
-              </span>
-            </a>
-          </span>
-          <div class="stats gr-file-list">
-            <span class="path gr-file-list" id="result_[[item.result]]">
-              [[item.result]]
+          <div class="patchInfo-header gr-file-list-header">
+            <span class="path gr-file-list" title="[[item.checker]]">
+              [[item.checker]]
             </span>
-            <span class="path gr-file-list">
-              [[item.spent]]
+            <span class="path gr-file-list" id="checker-date">
+              <gr-date-formatter date-str="[[item.date]]"></gr-date-formatter>
             </span>
           </div>
 
+          <template is="dom-repeat" items="{{item.checks}}">
+          <div class="file-row row gr-file-list">
+
+            <span class="path gr-file-list">
+              <a class="pathLink gr-file-list" href="[[item.url]]">
+                <span class="fullFileName gr-file-list" title="[[item.name]]">
+                  [[item.name]]
+                </span>
+              </a>
+            </span>
+            <div class="stats gr-file-list">
+              <span class="path gr-file-list" id="result_[[item.result]]">
+                [[item.result]]
+              </span>
+              <span class="path gr-file-list">
+                [[item.spent]]
+              </span>
+            </div>
+
+          </div>
+          </template>
         </div>
-        </template>
-      </div>
-    </template>
+      </template>
     </div>
   </template>
   <script>
