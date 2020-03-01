@@ -56,25 +56,24 @@
           </div>
 
           <template is="dom-repeat" items="{{item.checks}}">
-          <div class="file-row row gr-file-list">
+            <div class="file-row row gr-file-list">
 
-            <span class="path gr-file-list">
-              <a class="pathLink gr-file-list" href="[[item.url]]">
-                <span class="fullFileName gr-file-list" title="[[item.name]]">
-                  [[item.name]]
-                </span>
-              </a>
-            </span>
-            <div class="stats gr-file-list">
-              <span class="path gr-file-list" id="result_[[item.result]]">
-                [[item.result]]
-              </span>
               <span class="path gr-file-list">
-                [[item.spent]]
+                <a class="pathLink gr-file-list" href="[[item.url]]">
+                  <span class="fullFileName gr-file-list" title="[[item.name]]">
+                    [[item.name]]
+                  </span>
+                </a>
               </span>
+              <div class="stats gr-file-list">
+                <span class="path gr-file-list" id="result_[[item.result]]">
+                  [[item.result]]
+                </span>
+                <span class="path gr-file-list">
+                  [[item.spent]]
+                </span>
+              </div>
             </div>
-
-          </div>
           </template>
         </div>
       </template>
