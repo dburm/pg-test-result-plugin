@@ -47,9 +47,10 @@
         <div class="gr-file-list">
 
           <div class="patchInfo-header gr-file-list-header">
-            <span class="path gr-file-list" title="[[item.checker]]">
-              [[item.checker]]
-            </span>
+            <gr-account-label
+              account=[[item.checker]]
+              class="authorLabel"
+            >
             <span class="path gr-file-list" id="checker-date">
               <gr-date-formatter date-str="[[item.date]]"></gr-date-formatter>
             </span>
@@ -119,7 +120,7 @@
               var checker = _checkers[it.author._account_id];
               if (checker === undefined) {
                 checker = _checkers[it.author._account_id] = {
-                  checker: it.author.name,
+                  checker: it.author,
                   account_id : it.author._account_id,
                   checks: _checks,
                   date: it.date
@@ -154,13 +155,13 @@
           var check;
           var checks = {};
 
-          var re = /(?:Build (?<st>Started) )?(?<url>http[^ ]+\/job\/(?<name>[^\/ ]+)\/[^ ]+)(?: : (?<result>[A-Z_]+)(?<spent> .*)?$)?/gm;
+          var re = /(?:Build (Started) )?(http[^ ]+\/job\/([^\/ ]+)\/[^ ]+)(?: : ([A-Z_]+)( .*)?$)?/gm;
           while (check = re.exec(message)) {
-            checks[check.groups.name] = {
-              name: check.groups.name,
-              url: check.groups.url,
-              result: check.groups.st || check.groups.result,
-              spent: check.groups.spent,
+            checks[check[3]] = {
+              name: check[3],
+              url: check[2],
+              result: check[1] || check[4],
+              spent: check[5],
             };
           };
 
