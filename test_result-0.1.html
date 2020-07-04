@@ -154,13 +154,13 @@
           var check;
           var checks = {};
 
-          var re = /(?:Build (?<st>Started) )?(?<url>http[^ ]+\/job\/(?<name>[^\/ ]+)\/[^ ]+)(?: : (?<result>[A-Z_]+)(?<spent> .*)?$)?/gm;
+          var re = /(?:Build (Started) )?(http[^ ]+\/job\/([^\/ ]+)\/[^ ]+)(?: : ([A-Z_]+)( .*)?$)?/gm;
           while (check = re.exec(message)) {
-            checks[check.groups.name] = {
-              name: check.groups.name,
-              url: check.groups.url,
-              result: check.groups.st || check.groups.result,
-              spent: check.groups.spent,
+            checks[check[3]] = {
+              name: check[3],
+              url: check[2],
+              result: check[1] || check[4],
+              spent: check[5],
             };
           };
 
