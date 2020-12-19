@@ -29,8 +29,27 @@
         color: #757575;
       }
 
-      #checker-date {
-        text-align: right;
+      .status {
+        white-space: nowrap;
+        padding-left: var(--spacing-l);
+      }
+
+      .header {
+        color: var(--primary-text-color);
+        background-color: var(--background-color-tertiary);
+        justify-content: space-between;
+        padding: var(--spacing-m) var(--spacing-l);
+        border-top: 1px solid var(--border-color);
+        display: flex;
+      }
+
+      .row {
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        min-height: calc(var(--line-height-normal) + 2 * var(--spacing-s));
+        padding: var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) var(--spacing-xs);
+        background-color: var(--view-background-color);
+        justify-content: space-between
       }
     </style>
   </template>
@@ -39,45 +58,34 @@
 <dom-module id="gr-test-result-table-module">
   <template>
     <style include="shared-styles"></style>
-    <style include="gr-file-list"></style>
-    <style include="gr-file-list-header"></style>
     <style include="gr-test-result-table-style-module"></style>
-    <div class="separatedSection style-scope gr-change-metadata" style="margin-top: 0; padding: 0">
-      <template is="dom-repeat" items="{{checkers}}">
-        <div class="gr-file-list">
-
-          <div class="patchInfo-header gr-file-list-header">
-            <span class="path gr-file-list" title="[[item.checker]]">
-              [[item.checker]]
+    <template is="dom-repeat" items="[[checkers]]">
+      <div class="header">
+        <div title="[[item.checker]]">
+          [[item.checker]]
+        </div>
+        <gr-date-formatter date-str="[[item.date]]"></gr-date-formatter>
+      </div>
+      <template is="dom-repeat" items="[[item.checks]]">
+        <div class="row">
+          <div>
+            <a href="[[item.url]]">
+              <span title="[[item.url]]">
+              [[item.name]]
+              </span>
+            </a>
+          </div>
+          <div class="status">
+            <span id="result_[[item.result]]">
+               [[item.result]]
             </span>
-            <span class="path gr-file-list" id="checker-date">
-              <gr-date-formatter date-str="[[item.date]]"></gr-date-formatter>
+            <span>
+               [[item.spent]]
             </span>
           </div>
-
-          <template is="dom-repeat" items="{{item.checks}}">
-            <div class="file-row row gr-file-list">
-
-              <span class="path gr-file-list">
-                <a class="pathLink gr-file-list" href="[[item.url]]">
-                  <span class="fullFileName gr-file-list" title="[[item.name]]">
-                    [[item.name]]
-                  </span>
-                </a>
-              </span>
-              <div class="stats gr-file-list">
-                <span class="path gr-file-list" id="result_[[item.result]]">
-                  [[item.result]]
-                </span>
-                <span class="path gr-file-list">
-                  [[item.spent]]
-                </span>
-              </div>
-            </div>
-          </template>
         </div>
       </template>
-    </div>
+    </template>
   </template>
   <script>
     'use strict';
